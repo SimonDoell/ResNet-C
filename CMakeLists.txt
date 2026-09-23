@@ -15,6 +15,6 @@ endif()
 add_executable(ResNet
   src/matrix.c
   src/layer.c
-  src/tree.c
+  src/graph.c
   src/main.c
 )

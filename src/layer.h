@@ -18,7 +18,7 @@ typedef struct {
 
 typedef void(*Free)           (void* context);
 typedef void(*Forward)        (void* context, const Matrix* restrict activation, Matrix* restrict activation_output);
-typedef void(*Backward)       (void* context, const Matrix* restrict gradient,   Matrix* restrict gradient_output);
+typedef void(*Backward)       (void* context, const Matrix* restrict gradient, const Matrix* restrict activation, Matrix* restrict gradient_output);
 typedef void(*GetParameters)  (void* context, Parameters* out_parameters);
 typedef void(*OptimizerFree)  (void* context_optimizer);
 typedef void(*OptimizerStep)  (void* context_optimizer, const Parameter* restrict parameters, float lr);

@@ -13,8 +13,5 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 add_executable(ResNet
-  src/matrix.c
-  src/layer.c
-  src/graph.c
   src/main.c
 )

@@ -1,9 +1,6 @@
 #include <stdio.h>
-#include "matrix.h"
-#include "layer.h"
 
 int main() {
-    
-
+    printf("Hello, World!\n");
     return 0;
 }

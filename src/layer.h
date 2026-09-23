@@ -20,8 +20,17 @@ typedef void(*Free)           (void* context);
 typedef void(*Forward)        (void* context, const Matrix* restrict activation, Matrix* restrict activation_output);
 typedef void(*Backward)       (void* context, const Matrix* restrict gradient, const Matrix* restrict activation, Matrix* restrict gradient_output);
 typedef void(*GetParameters)  (void* context, Parameters* out_parameters);
-typedef void(*OptimizerFree)  (void* context_optimizer);
-typedef void(*OptimizerStep)  (void* context_optimizer, const Parameter* restrict parameters, float lr);
+typedef void(*OptimizerFree)  (void* context);
+typedef void(*OptimizerStep)  (void* context, const Parameters* restrict parameters, float lr);
+
+typedef struct {
+    void*          context;
+    OptimizerFree  free;
+    OptimizerStep  step;
+} Optimizer;
+
+// NULLed optimizer for layers that do not have learnable parameters
+extern const Optimizer optimizer_NULL;
 
 typedef struct {
     void*          context;
@@ -29,15 +38,30 @@ typedef struct {
     Forward        forward;
     Backward       backward;
     GetParameters  get_params;
+} LayerData;
 
-    void*          context_optimizer;
-    OptimizerFree  optimizer_free;
-    OptimizerStep  optimizer_step;
+
+typedef struct {
+    LayerData      layer_data;
+    Optimizer      optimizer;
     
     Matrix         activation_input;
     Matrix         activation_output;
     Matrix         gradient_input;
     Matrix         gradient_output;
 } Layer;
+
+void optimizer_assert(const Optimizer* optimizer);
+void layerdata_assert(const LayerData* layerdata);
+void optimizer_free(Optimizer* optimizer);
+void layerdata_free(LayerData* layerdata);
+
+Layer layer_new(LayerData layer_data, Optimizer optimizer);
+
+void layer_assert(const Layer* layer);
+void layer_free(Layer* layer);
+
+void layer_forward(Layer* layer);
+void layer_backward(Layer* layer, float lr);
 
 #endif

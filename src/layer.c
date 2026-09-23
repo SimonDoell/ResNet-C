@@ -47,7 +47,10 @@ Layer layer_new(LayerData layer_data, OptimizerFactory optimizer_factory) {
     layer.gradient_input    = mat_matrix(1, 1);
     layer.gradient_output   = mat_matrix(1, 1);
     layer.layer_data        = layer_data;
-    layer.parameters        = (Parameters){0};
+    layer.parameters        = (Parameters){
+        .params = malloc(sizeof(Parameter) * layer_data.param_count),
+        .count  = layer_data.param_count,
+    };
     
     layer_data.get_params(layer.layer_data.context, &layer.parameters);
 

@@ -49,7 +49,10 @@ typedef struct {
     Matrix          gradient_output;
 } Layer;
 
+Parameter param_matrix(uint32_t rows, uint32_t cols);
+Parameter param_vector(uint32_t rows);
 void param_assert(Parameter* parameter);
+void param_free(Parameter* parameter);
 void param_add_gradient(Parameter* parameter, const Matrix* restrict gradient);
 
 void optimizer_assert(const Optimizer* restrict optimizer);

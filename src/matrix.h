@@ -37,5 +37,7 @@ void mat_mulf_inplace(Matrix* restrict m, float f);
 void mat_transpose_into(Matrix* restrict dest, const Matrix* restrict src);
 
 void mat_mul_into(Matrix* restrict dest, const Matrix* restrict m1, const Matrix* restrict m2);
+void mat_mul_accumulate_into(Matrix* restrict dest, const Matrix* restrict m1, const Matrix* restrict m2);
+void mat_mul_transposed_into(Matrix* restrict dest, const Matrix* restrict m1_T, const Matrix* restrict m2);
 
 #endif

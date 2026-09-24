@@ -100,10 +100,27 @@ void layer_backward(Layer* layer) {
     layer->layer_data.backward(layer->layer_data.context, &layer->gradient_input, &layer->activation_input, &layer->gradient_output);
 }
 
+Parameter param_matrix(uint32_t rows, uint32_t cols) {
+    return (Parameter){
+        .parameter = mat_matrix(rows, cols),
+        .gradient  = mat_matrix(rows, cols),
+    };
+}
+
+Parameter param_vector(uint32_t rows) {
+    return param_matrix(rows, 1);
+}
+
 void param_assert(Parameter* parameter) {
     assert(parameter);
     assert(parameter->parameter.rows == parameter->gradient.rows);
     assert(parameter->parameter.cols == parameter->gradient.cols);
+}
+
+void param_free(Parameter* parameter) {
+    param_assert(parameter);
+    mat_free(&parameter->parameter);
+    mat_free(&parameter->gradient);
 }
 
 void param_add_gradient(Parameter* parameter, const Matrix* restrict gradient) {

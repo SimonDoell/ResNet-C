@@ -25,6 +25,8 @@ void dense_free(void* context) {
 
     param_free(&dense->biases);
     param_free(&dense->weights);
+
+    free(context);
 }
 
 void dense_forward(void* context, const Matrix* restrict activation, Matrix* restrict activation_output) {
@@ -49,6 +51,13 @@ LayerData dense(uint32_t fan_in, uint32_t fan_out) {
 
     context->weights   = param_matrix(fan_out, fan_in);
     context->biases    = param_vector(fan_out);
+
+    // Xavier init
+    float range = sqrtf(6.0f / (float)(fan_in + fan_out));
+    
+    for (uint32_t i = 0; i < context->weights.parameter.rows * context->weights.parameter.cols; ++i) {
+        context->weights.parameter.values[i] = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * range;
+    }
 
     return (LayerData){
         .context      = context,

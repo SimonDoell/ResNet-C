@@ -21,3 +21,5 @@ add_executable(ResNet
   
   src/main.c
 )
+
+target_link_libraries(ResNet m)

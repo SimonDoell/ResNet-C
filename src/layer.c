@@ -20,8 +20,9 @@ void layerdata_assert(const LayerData* restrict layer_data) {
 
 void optimizer_free(Optimizer* restrict optimizer) {
     optimizer_assert(optimizer);
-    
-    optimizer->free(optimizer->context);
+
+    if (optimizer->free)
+        optimizer->free(optimizer->context);
 
     optimizer->context = NULL;
     optimizer->free    = NULL;

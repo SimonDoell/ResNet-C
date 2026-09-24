@@ -4,6 +4,7 @@ void optimizer_assert(const Optimizer* restrict optimizer) {
     assert(optimizer);
     assert(
         ( optimizer->context &&  optimizer->free &&  optimizer->step) ||
+        (!optimizer->context && !optimizer->free &&  optimizer->step) ||
         (!optimizer->context && !optimizer->free && !optimizer->step)
     );
 }
@@ -133,6 +134,8 @@ void layer_apply_gradients(Layer* layer, float lr, uint32_t batch_count) {
     layer_assert(layer);
     assert(batch_count > 0);
     assert(lr != 0.0f);
+
+    if (layer->optimizer.step == NULL) return;
 
     layer->layer_data.get_params(layer->layer_data.context, &layer->parameters);
 

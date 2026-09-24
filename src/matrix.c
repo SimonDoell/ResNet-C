@@ -171,28 +171,30 @@ void mat_mul_into(Matrix* restrict dest, const Matrix* restrict m1, const Matrix
     }
 }
 
-void mat_mul_accumulate_into(Matrix* restrict dest, const Matrix* restrict m1, const Matrix* restrict m2) {
+void mat_mul_accumulate_transposed_m2_into(Matrix* restrict dest, const Matrix* restrict m1, const Matrix* restrict m2_T) {
     mat_assert(dest);
     mat_assert(m1);
-    mat_assert(m2);
+    mat_assert(m2_T);
 
-    assert(m1->cols == m2->rows);
+    assert(m1->cols == m2_T->cols);
 
-    mat_resize(dest, m1->rows, m2->cols);
+    mat_resize(dest, m1->rows, m2_T->rows);
 
     uint32_t dest_index = 0;
 
-    for (uint32_t k = 0; k < m2->cols; ++k) {
+    for (uint32_t k = 0; k < m2_T->rows; ++k) {
         for (uint32_t i = 0; i < m1->rows; ++i) {
             for (uint32_t j = 0; j < m1->cols; ++j)
-                dest->values[dest_index] += mat_at_const(m1, i, j) * mat_at_const(m2, j, k);
+                dest->values[dest_index] +=
+                    mat_at_const(m1,   i, j) *
+                    mat_at_const(m2_T, k, j);
 
             dest_index++;
         }
     }
 }
 
-void mat_mul_transposed_into(Matrix* restrict dest, const Matrix* restrict m1_T, const Matrix* restrict m2) {
+void mat_mul_transposed_m1_into(Matrix* restrict dest, const Matrix* restrict m1_T, const Matrix* restrict m2) {
     mat_assert(dest);
     mat_assert(m1_T);
     mat_assert(m2);

@@ -37,14 +37,11 @@ void dense_forward(void* context, const Matrix* restrict activation, Matrix* res
 void dense_backward(void* context, const Matrix* restrict gradient, const Matrix* restrict activation, Matrix* restrict gradient_output) {
     DenseContext* dense = dense_from_context(context);
 
-    uint32_t output_size = dense->weights.parameter.rows;
-    uint32_t input_size  = dense->weights.parameter.cols;
-
-    mat_mul_transposed_into(gradient_output, &dense->weights.parameter /*implicitely transposed by the function*/, gradient);
+    mat_mul_transposed_m1_into(gradient_output, &dense->weights.parameter /*implicitely transposed by the function*/, gradient);
 
     mat_add_inplace(&dense->biases.gradient, gradient);
 
-    mat_mul_accumulate_into(&dense->weights.gradient, gradient, activation);
+    mat_mul_accumulate_transposed_m2_into(&dense->weights.gradient, gradient, activation /*implicitely transposed by the function*/);
 }
 
 LayerData dense(uint32_t fan_in, uint32_t fan_out) {

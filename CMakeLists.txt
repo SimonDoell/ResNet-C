@@ -15,6 +15,7 @@ endif()
 add_executable(ResNet
   src/matrix.c
   src/layer.c
+  src/network.c
 
   src/optimizers/sgd.c
   src/layers/dense.c

@@ -35,27 +35,40 @@ int main() {
 
 
     // Layer test
+    printf("Layers start!\n");
     Layer layer1 = layer_new(dense(1, 16), SGD);
     Layer layer2 = layer_new(dense(16, 1), SGD);
-
-    Matrix input = mat_vector(1);
-    input.values[0] = 1.0f;
-
-    mat_copy_into(&layer1.activation_input, &input);
-    layer_forward(&layer1);
-
-    mat_copy_into(&layer2.activation_input, &layer1.activation_output);
-    layer_forward(&layer2);
-
+    Matrix input  = mat_vector(1);
     Matrix output = mat_vector(1);
-    mat_copy_into(&output, &layer2.activation_output);
 
-    printf("Output %ix%i: %f\n", output.rows, output.cols, output.values[0]);
+    for (uint32_t i = 0; i < 100; ++i) {
+        input.values[0] = 1.0f;
+
+        mat_copy_into(&layer1.activation_input, &input);
+        layer_forward(&layer1);
+
+        mat_copy_into(&layer2.activation_input, &layer1.activation_output);
+        layer_forward(&layer2);
+
+        mat_copy_into(&output, &layer2.activation_output);
+
+        printf("Output %ix%i: %f\n", output.rows, output.cols, output.values[0]);
+
+        output.values[0] = output.values[0] - 0.2f;
+
+        mat_copy_into(&layer2.gradient_input, &output);
+        layer_backward(&layer2);
+        mat_copy_into(&layer1.gradient_input, &layer2.gradient_output);
+        layer_backward(&layer1);
+        layer_apply_gradients(&layer1, 0.01f, 1);
+        layer_apply_gradients(&layer2, 0.01f, 1);
+    }
     
     layer_free(&layer1);
     layer_free(&layer2);
     mat_free(&input);
     mat_free(&output);
+    printf("Layers stop!\n");
     
     return 0;
 }
